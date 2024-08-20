@@ -19,13 +19,13 @@ console.log(activeLink.value)
         >
         <router-link
             :class="
-                activeLink === 'statistical'
+                activeLink === 'user'
                     ? 'px-2 py-1 border-b-[1px] border-red-500'
                     : 'px-2 py-1'
             "
-            to="/statistical"
-            @click="activeLink = 'statistical'"
-            >Statistical</router-link
+            to="/user"
+            @click="activeLink = 'user'"
+            >User</router-link
         >
     </div>
     <router-view></router-view>

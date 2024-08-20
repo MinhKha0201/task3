@@ -1,9 +1,9 @@
 import { App } from '@/types/App.type'
+import { User } from '@/types/User.type'
 import { ColumnDef } from '@tanstack/vue-table'
-import { h } from 'vue'
+import { h, ref } from 'vue'
 import DataTableCombobox from '../DataTableCombobox.vue'
 import DataTableLink from '../DataTableLink.vue'
-import { User } from '@/types/User.type'
 import DataTableUserCombobox from '../DataTableUserCombobox.vue'
 
 export type Data = App & {
@@ -35,15 +35,21 @@ export const createColumns = (
         accessorKey: 'status',
         header: () => h('div', { class: 'text-left' }, 'Request Status'),
         cell: ({ row }) => {
-            return h(DataTableCombobox, {
-                app_id: row.getValue<string>('app_id'),
-                onUpdate: (d: { app_id: string; status: string }) => {
-                    const app = data.find((i) => i.app_id === d.app_id)
-                    if (app) {
-                        app.status = d.status
-                    }
-                },
-            })
+            const openModal = ref<boolean>(false)
+            return h('div', [
+                h(DataTableCombobox, {
+                    app_id: row.getValue<string>('app_id'),
+                    onUpdate: (d: { app_id: string; status: string }) => {
+                        const app = data.find((i) => i.app_id === d.app_id)
+                        if (app) {
+                            app.status = d.status
+                        }
+                        if (d.status === 'pending') {
+                            openModal.value = true
+                        }
+                    },
+                }),
+            ])
         },
     },
     {

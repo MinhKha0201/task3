@@ -1,5 +1,5 @@
 import TaskPage from '@/views/TaskPage.vue'
-import StatisticalPage from '@/views/StatisticalPage.vue'
+import UserPage from '@/views/UserPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -8,8 +8,8 @@ const routes = [
         component: TaskPage,
     },
     {
-        path: '/statistical',
-        component: StatisticalPage,
+        path: '/user',
+        component: UserPage,
     },
 ]
 

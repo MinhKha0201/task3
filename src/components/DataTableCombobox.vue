@@ -22,10 +22,11 @@ import { AcceptableValue } from 'node_modules/radix-vue/dist/shared/types'
 
 type Prop = {
     app_id: string
+    value?: string
     onUpdate: Function
 }
 
-defineProps<Prop>()
+const props = defineProps<Prop>()
 const emit = defineEmits(['update:value'])
 
 export type Status = {
@@ -43,7 +44,7 @@ const statuses = [
 ]
 
 const open = ref(false)
-const value = ref('')
+const value = ref(props.value)
 </script>
 
 <template>

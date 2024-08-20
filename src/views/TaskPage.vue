@@ -15,8 +15,11 @@ const usersData = ref<User[]>([])
 const teamsData = ref<Team[]>([])
 const appsData = ref<Data[]>([])
 const next_page_url = ref<string | null>(null)
+const isLoading = ref<boolean>(false)
+
 const fetchData = async () => {
     try {
+        isLoading.value = false
         do {
             const usersRes = await fetchUser(
                 next_page_url.value !== null ? next_page_url.value : usersApi,
@@ -36,6 +39,7 @@ const fetchData = async () => {
                 ver: '01/01/2024',
             }
         })
+        isLoading.value = true
     } catch (error) {
         console.log(error)
     }
@@ -161,7 +165,18 @@ const columns = computed(() => createColumns(appsData.value, usersData.value))
             <AddTaskModal />
         </div>
         <div class="">
-            <DataTable :columns="columns" :data="appsData" />
+            <DataTable v-if="isLoading" :columns="columns" :data="appsData" />
+            <div v-else class="text-center">
+                <div
+                    class="m-12 text-center inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                    role="status"
+                >
+                    <span
+                        class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
+                        >Loading...</span
+                    >
+                </div>
+            </div>
         </div>
     </div>
 </template>

@@ -10,10 +10,13 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
+import { HTMLAttributes } from 'vue'
 
 const props = defineProps<{
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
+    class?: HTMLAttributes['class']
 }>()
 
 const table = useVueTable({
@@ -28,7 +31,7 @@ const table = useVueTable({
 </script>
 
 <template>
-    <div class="border rounded-md">
+    <div :class="cn('border rounded-md', props.class)">
         <Table>
             <TableHeader>
                 <TableRow

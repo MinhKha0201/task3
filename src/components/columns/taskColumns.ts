@@ -1,6 +1,8 @@
 import { App } from '@/types/App.type'
 import { ColumnDef } from '@tanstack/vue-table'
-import { h } from 'vue'
+import { h, ref } from 'vue'
+import DataTableCombobox from '../DataTableCombobox.vue'
+import Textarea from '../ui/textarea/Textarea.vue'
 
 export type Task = App & {
     status: string
@@ -8,7 +10,7 @@ export type Task = App & {
     due_date: string
     note: string
 }
-export const taskColumns = (data: Task[]): ColumnDef<Task>[] => [
+export const taskColumns: ColumnDef<Task>[] = [
     {
         accessorKey: 'app_id',
         header: () => h('div', { class: 'hidden' }, 'ID'),
@@ -23,8 +25,23 @@ export const taskColumns = (data: Task[]): ColumnDef<Task>[] => [
     },
     {
         accessorKey: 'status',
-        header: () => h('div', { class: 'text-left' }, 'Status'),
-        cell: ({ row }) => h('div', row.getValue('status')),
+        header: () => h('div', { class: 'text-left' }, 'Request Status'),
+        cell: ({ row }) => {
+            const currentStatus = ref<string>(row.getValue<string>('status'))
+            return h(DataTableCombobox, {
+                app_id: row.getValue<string>('app_id'),
+                value: currentStatus.value,
+                onUpdate: (d: { app_id: string; status: string }) => {
+                    currentStatus.value = d.status
+                    const noteTextarea = document.getElementById(
+                        `textarea-${d.app_id}`,
+                    ) as HTMLTextAreaElement
+                    if (noteTextarea && d.status === 'pending') {
+                        noteTextarea.focus()
+                    }
+                },
+            })
+        },
     },
     {
         accessorKey: 'start_date',
@@ -39,6 +56,23 @@ export const taskColumns = (data: Task[]): ColumnDef<Task>[] => [
     {
         accessorKey: 'note',
         header: () => h('div', { class: 'text-left' }, 'Note'),
-        cell: ({ row }) => h('div', row.getValue('note')),
+        cell: ({ row }) => {
+            const handleFocus = (event: FocusEvent) => {}
+
+            const handleBlur = (event: FocusEvent) => {
+                const e = event.target as HTMLInputElement
+                console.log(event)
+                if (e.value.trim() === '') {
+                    // e.focus()
+                } else {
+                }
+            }
+            return h(Textarea, {
+                defaultValue: row.getValue<string>('note'),
+                id: `textarea-${row.getValue('app_id')}`,
+                onFocus: handleFocus,
+                onBlur: handleBlur,
+            })
+        },
     },
 ]
